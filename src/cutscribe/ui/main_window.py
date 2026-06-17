@@ -25,9 +25,9 @@ from cutscribe.core.autocut import build_cut_plan
 from cutscribe.core.ffmpeg import detect_silence, probe_duration
 from cutscribe.core.presets import load_presets
 from cutscribe.core.profile_scorer import analyze_video_visuals, rank_presets
-from cutscribe.core.render import copy_video_placeholder
+from cutscribe.core.render import render_captioned_video, write_ass, write_srt
 from cutscribe.core.transcribe import Transcriber
-from cutscribe.models import CaptionPreset
+from cutscribe.models import CaptionPreset, TranscriptionResult
 
 
 def default_preset_dir() -> Path:
@@ -48,6 +48,8 @@ class MainWindow(QMainWindow):
         self.resize(920, 620)
 
         self.presets: list[CaptionPreset] = load_presets(default_preset_dir())
+        self.current_transcript: TranscriptionResult | None = None
+        self.current_subtitle_path: Path | None = None
         self.input_edit = QLineEdit()
         self.output_edit = QLineEdit(str(Path.cwd() / "exports"))
         self.preset_combo = QComboBox()
@@ -82,7 +84,7 @@ class MainWindow(QMainWindow):
         render_button = QPushButton("Render")
         analyze_button.clicked.connect(self.analyze_video)
         transcribe_button.clicked.connect(self.transcribe_video)
-        render_button.clicked.connect(self.render_video_placeholder)
+        render_button.clicked.connect(self.render_video)
         actions.addWidget(analyze_button)
         actions.addWidget(transcribe_button)
         actions.addWidget(render_button)
@@ -106,6 +108,11 @@ class MainWindow(QMainWindow):
         self.log.append(message)
         self.log.verticalScrollBar().setValue(self.log.verticalScrollBar().maximum())
 
+    def output_dir(self) -> Path:
+        path = Path(self.output_edit.text()).expanduser()
+        path.mkdir(parents=True, exist_ok=True)
+        return path
+
     def selected_video(self) -> Path | None:
         path = Path(self.input_edit.text()).expanduser()
         return path if path.exists() else None
@@ -123,6 +130,8 @@ class MainWindow(QMainWindow):
         )
         if path:
             self.input_edit.setText(path)
+            self.current_transcript = None
+            self.current_subtitle_path = None
             self.append_log(f"Selected video: {path}")
 
     def choose_output_folder(self) -> None:
@@ -157,22 +166,38 @@ class MainWindow(QMainWindow):
 
     def transcribe_video(self) -> None:
         video = self.selected_video()
+        preset = self.selected_preset()
         if not video:
             self.append_log("Choose a valid input video first.")
+            return
+        if not preset:
+            self.append_log("Choose a valid preset first.")
             return
         try:
             model_name = os.getenv("CUTSCRIBE_WHISPER_MODEL", "small")
             transcriber = Transcriber(model_size=model_name)
+            self.append_log(f"Loading faster-whisper model: {model_name}")
             result = transcriber.transcribe(video)
             word_count = sum(len(segment.words) for segment in result.segments)
+
+            output_dir = self.output_dir()
+            ass_path = output_dir / f"{video.stem}.{preset.id}.ass"
+            srt_path = output_dir / f"{video.stem}.srt"
+            write_ass(result, ass_path, preset)
+            write_srt(result, srt_path)
+
+            self.current_transcript = result
+            self.current_subtitle_path = ass_path
             self.append_log(
                 f"Transcribed {len(result.segments)} segments / {word_count} words. "
                 f"Language={result.language}"
             )
+            self.append_log(f"Wrote styled subtitle file: {ass_path}")
+            self.append_log(f"Wrote compatibility SRT file: {srt_path}")
         except Exception as exc:  # noqa: BLE001
             self.append_log(f"Transcription failed: {exc}")
 
-    def render_video_placeholder(self) -> None:
+    def render_video(self) -> None:
         video = self.selected_video()
         preset = self.selected_preset()
         if not video:
@@ -181,15 +206,14 @@ class MainWindow(QMainWindow):
         if not preset:
             self.append_log("Choose a valid preset first.")
             return
+        if not self.current_subtitle_path or not self.current_subtitle_path.exists():
+            self.append_log("Transcribe first so CutScribe has subtitles to render.")
+            return
 
-        output_dir = Path(self.output_edit.text()).expanduser()
-        output_path = output_dir / f"{video.stem}.cutscribe.placeholder.mp4"
+        output_path = self.output_dir() / f"{video.stem}.{preset.id}.captioned.mp4"
         try:
-            copy_video_placeholder(video, output_path)
-            self.append_log(
-                f"Placeholder render copied video to {output_path}. "
-                "Full caption render comes next."
-            )
+            render_captioned_video(video, self.current_subtitle_path, output_path, preset)
+            self.append_log(f"Rendered captioned video: {output_path}")
         except Exception as exc:  # noqa: BLE001
             self.append_log(f"Render failed: {exc}")
 
