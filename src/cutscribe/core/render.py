@@ -101,6 +101,32 @@ def write_ass(
     highlight = _hex_to_ass_color(style.highlight_color)
     font_name = style.font_family.replace(",", " ")
     bold = -1 if "bold" in font_name.lower() or "black" in font_name.lower() else 0
+    back_color = "&H64000000"
+    style_values = [
+        "Default",
+        font_name,
+        str(style.font_size),
+        primary,
+        highlight,
+        outline,
+        back_color,
+        str(bold),
+        "0",
+        "0",
+        "0",
+        "100",
+        "100",
+        "0",
+        "0",
+        "1",
+        str(style.stroke_width),
+        str(style.shadow),
+        str(alignment),
+        "80",
+        "80",
+        "120",
+        "1",
+    ]
 
     lines = [
         "[Script Info]",
@@ -114,9 +140,7 @@ def write_ass(
         "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, "
         "BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, "
         "BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding",
-        "Style: Default,"
-        f"{font_name},{style.font_size},{primary},{highlight},{outline},&H64000000,{bold},0,0,0,"
-        f"100,100,0,0,1,{style.stroke_width},{style.shadow},{alignment},80,80,120,1",
+        "Style: " + ",".join(style_values),
         "",
         "[Events]",
         "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",
