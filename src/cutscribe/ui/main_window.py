@@ -6,7 +6,6 @@ import os
 import sys
 from pathlib import Path
 
-from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QApplication,
     QComboBox,
@@ -22,8 +21,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from cutscribe.core.ffmpeg import detect_silence, probe_duration
 from cutscribe.core.autocut import build_cut_plan
+from cutscribe.core.ffmpeg import detect_silence, probe_duration
 from cutscribe.core.presets import load_presets
 from cutscribe.core.profile_scorer import analyze_video_visuals, rank_presets
 from cutscribe.core.render import copy_video_placeholder
@@ -150,7 +149,8 @@ class MainWindow(QMainWindow):
                 scores = rank_presets(self.presets, analysis)
                 best = scores[0]
                 self.append_log(
-                    f"Best preset candidate: {best.preset_id} ({best.score:.2f}) - {', '.join(best.reasons)}"
+                    f"Best preset candidate: {best.preset_id} "
+                    f"({best.score:.2f}) - {', '.join(best.reasons)}"
                 )
         except Exception as exc:  # noqa: BLE001 - UI should surface pipeline errors.
             self.append_log(f"Analyze failed: {exc}")
@@ -166,7 +166,8 @@ class MainWindow(QMainWindow):
             result = transcriber.transcribe(video)
             word_count = sum(len(segment.words) for segment in result.segments)
             self.append_log(
-                f"Transcribed {len(result.segments)} segments / {word_count} words. Language={result.language}"
+                f"Transcribed {len(result.segments)} segments / {word_count} words. "
+                f"Language={result.language}"
             )
         except Exception as exc:  # noqa: BLE001
             self.append_log(f"Transcription failed: {exc}")
@@ -186,7 +187,8 @@ class MainWindow(QMainWindow):
         try:
             copy_video_placeholder(video, output_path)
             self.append_log(
-                f"Placeholder render copied video to {output_path}. Full caption render comes next."
+                f"Placeholder render copied video to {output_path}. "
+                "Full caption render comes next."
             )
         except Exception as exc:  # noqa: BLE001
             self.append_log(f"Render failed: {exc}")
