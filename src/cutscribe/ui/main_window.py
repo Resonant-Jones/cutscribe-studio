@@ -135,7 +135,11 @@ class MainWindow(QMainWindow):
             self.append_log(f"Selected video: {path}")
 
     def choose_output_folder(self) -> None:
-        path = QFileDialog.getExistingDirectory(self, "Choose output folder", self.output_edit.text())
+        path = QFileDialog.getExistingDirectory(
+            self,
+            "Choose output folder",
+            self.output_edit.text(),
+        )
         if path:
             self.output_edit.setText(path)
             self.append_log(f"Selected output folder: {path}")
