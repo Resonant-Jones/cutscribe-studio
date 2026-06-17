@@ -1,7 +1,12 @@
 from pathlib import Path
 
 from cutscribe.core.render import write_ass, write_srt
-from cutscribe.models import CaptionPreset, CaptionStyle, TranscriptSegment, TranscriptionResult
+from cutscribe.models import (
+    CaptionPreset,
+    CaptionStyle,
+    TranscriptionResult,
+    TranscriptSegment,
+)
 
 
 def make_transcript() -> TranscriptionResult:

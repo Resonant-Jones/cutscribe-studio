@@ -93,7 +93,10 @@ def rank_presets(presets: list[CaptionPreset], analysis: VideoAnalysis) -> list[
     )
 
 
-def choose_best_preset(presets: list[CaptionPreset], analysis: VideoAnalysis) -> CaptionPreset | None:
+def choose_best_preset(
+    presets: list[CaptionPreset],
+    analysis: VideoAnalysis,
+) -> CaptionPreset | None:
     """Return the highest-scoring preset, if any presets exist."""
     if not presets:
         return None

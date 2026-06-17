@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from cutscribe.models import TranscriptSegment, TranscriptionResult, TranscriptWord
+from cutscribe.models import TranscriptionResult, TranscriptSegment, TranscriptWord
 
 
 class Transcriber:
@@ -14,7 +14,12 @@ class Transcriber:
     should run this in a worker thread or process to avoid blocking Qt.
     """
 
-    def __init__(self, model_size: str = "small", device: str = "auto", compute_type: str = "auto") -> None:
+    def __init__(
+        self,
+        model_size: str = "small",
+        device: str = "auto",
+        compute_type: str = "auto",
+    ) -> None:
         self.model_size = model_size
         self.device = device
         self.compute_type = compute_type

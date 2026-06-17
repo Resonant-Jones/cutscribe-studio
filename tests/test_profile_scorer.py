@@ -1,4 +1,8 @@
-from cutscribe.core.profile_scorer import choose_best_preset, rank_presets, score_preset_for_analysis
+from cutscribe.core.profile_scorer import (
+    choose_best_preset,
+    rank_presets,
+    score_preset_for_analysis,
+)
 from cutscribe.models import CaptionPreset, CaptionStyle, VideoAnalysis
 
 

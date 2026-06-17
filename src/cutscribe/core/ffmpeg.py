@@ -108,6 +108,16 @@ def detect_silence(
         # FFmpeg commonly returns 0 here. Keep this guard conservative.
         raise FFmpegError(completed.stderr)
 
-    starts = [float(match.group(1)) for match in re.finditer(r"silence_start: ([0-9.]+)", completed.stderr)]
-    ends = [float(match.group(1)) for match in re.finditer(r"silence_end: ([0-9.]+)", completed.stderr)]
-    return [SilenceInterval(start=start, end=end) for start, end in zip(starts, ends, strict=False) if end > start]
+    starts = [
+        float(match.group(1))
+        for match in re.finditer(r"silence_start: ([0-9.]+)", completed.stderr)
+    ]
+    ends = [
+        float(match.group(1))
+        for match in re.finditer(r"silence_end: ([0-9.]+)", completed.stderr)
+    ]
+    return [
+        SilenceInterval(start=start, end=end)
+        for start, end in zip(starts, ends, strict=False)
+        if end > start
+    ]
