@@ -29,15 +29,18 @@ Implemented now:
 - Silence-detection parser.
 - Preset models and validation.
 - Heuristic profile scoring placeholder.
-- Tests for preset loading and profile scoring.
+- Styled ASS subtitle generation from transcript segments.
+- Compatibility SRT subtitle generation.
+- FFmpeg caption burn-in path for captioned MP4 exports.
+- Tests for preset loading, profile scoring, and subtitle formatting.
 
 Planned next:
 
-- Real transcript-to-ASS caption generation.
-- Active-word highlighting.
+- Active-word ASS caption generation from word timestamps.
 - Timeline-aware auto-cut exports.
 - Batch processing.
-- Frame sampling for visual-aware preset selection.
+- Worker threads so long video operations do not block the Qt event loop.
+- Stronger frame sampling for visual-aware preset selection.
 
 ## Requirements
 
@@ -78,13 +81,29 @@ You can also use the console script:
 cutscribe
 ```
 
+## First caption render workflow
+
+1. Start the app from the activated virtual environment.
+2. Choose an input video.
+3. Choose an output folder.
+4. Choose a caption preset.
+5. Click **Transcribe**.
+6. Wait for CutScribe to write both `.ass` and `.srt` subtitle files.
+7. Click **Render**.
+8. Look for `*.captioned.mp4` in the output folder.
+
+The ASS file carries the current preset styling. Active-word highlighting is not implemented yet, but the render path is now shaped for it.
+
 ## Development
 
-Run tests:
+Run tests from the activated virtual environment:
 
 ```bash
+source .venv/bin/activate
 pytest
 ```
+
+If you run plain `pytest` outside the virtual environment, your system Python may not see the editable install or dependencies.
 
 Run linting:
 
