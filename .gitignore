@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Media and generated outputs
+input/
+output/
+exports/
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.wav
+*.srt
+*.ass
+*.vtt
+
+# Model caches may be huge
+models/
+.cache/

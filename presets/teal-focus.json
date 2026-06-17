@@ -1,0 +1,22 @@
+{
+  "id": "teal-focus",
+  "name": "Teal Focus",
+  "description": "Clean teal-highlight captions for calm explainers and software demos.",
+  "style": {
+    "font_family": "Arial",
+    "font_size": 58,
+    "primary_color": "#F7FFFF",
+    "outline_color": "#073B3A",
+    "highlight_color": "#36E7D6",
+    "stroke_width": 3,
+    "shadow": 2,
+    "position": "bottom_center",
+    "uppercase": false,
+    "max_words_on_screen": 6
+  },
+  "scoring_hints": {
+    "prefers_dark_background": 0.7,
+    "prefers_bright_background": 0.3,
+    "clutter_tolerance": 0.6
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "magenta-pop",
+  "name": "Magenta Pop",
+  "description": "Punchy captions for energetic clips with bright active-word emphasis.",
+  "style": {
+    "font_family": "Arial Black",
+    "font_size": 68,
+    "primary_color": "#FFFFFF",
+    "outline_color": "#180018",
+    "highlight_color": "#FF3FD1",
+    "stroke_width": 5,
+    "shadow": 3,
+    "position": "bottom_center",
+    "uppercase": true,
+    "max_words_on_screen": 4
+  },
+  "scoring_hints": {
+    "prefers_dark_background": 0.8,
+    "prefers_bright_background": 0.1,
+    "clutter_tolerance": 0.9
+  }
+}
